@@ -1,0 +1,45 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=19mm]{geometry}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{enumitem}
+\definecolor{navy}{HTML}{12355B}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.4em,itemsep=1pt,topsep=2pt}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{navy} Short Write-up}\\[3pt]
+{\large GIS Class Diagram for Murakata and Sankrail}\\[4pt]
+{\small Assignment 2 \textbar\ Group 08 \textbar\ Based on our Assignment 1 QGIS project}
+\end{center}
+\vspace{3pt}
+\hrule
+\vspace{7pt}
+
+\section*{\color{navy}What we modelled}
+In Assignment 1, our group made a QGIS map of Murakata and Sankrail. It uses nine shapefile layers: boundary, bareland, cropland, drainage, forest, landmarks, roads, settlement and waterbody. For Assignment 2, we drew a UML class diagram to show how the project and its geographic data fit together. The diagram has 15 classes and nine enumerations.
+
+\section*{\color{navy}Project and map layers}
+We used \texttt{GISProject} for the QGIS project and \texttt{MapLayer} for each shapefile. The project contains nine map layers, one for each source layer. A map layer stores its name, source file, geometry type and feature count. It also represents the spatial features in that file. Keeping these classes separate makes it clear which details belong to the project and which belong to an individual layer.
+
+\section*{\color{navy}Geographic features}
+\texttt{SpatialFeature} is an abstract class for information shared by mapped features, including geometry and an optional identifier. We made the identifier optional because the boundary layer has no ID field. We grouped the feature classes by shape using the abstract classes \texttt{PolygonFeature}, \texttt{PointFeature} and \texttt{LineFeature}. \texttt{StudyArea}, \texttt{Bareland}, \texttt{Cropland}, \texttt{Drainage}, \texttt{Forest}, \texttt{Settlement} and \texttt{Waterbody} are polygon features; \texttt{Landmark} is a point feature; and \texttt{Road} is a line feature.
+
+Feature attributes keep the field names from the DBF tables, such as \texttt{NAME}, \texttt{VILL\_NAME}, \texttt{AREA}, \texttt{bareland\_t}, \texttt{forest\_typ}, \texttt{landmark\_t} and \texttt{road\_type}. Cropland has no extra thematic field in the source data, so it has no extra attribute in the diagram.
+
+\section*{\color{navy}Categories and relationships}
+We used nine enumerations for fixed categories in the data, including road type, forest type, waterbody type and construction material. Their values follow the QML category definitions and the values recorded in the shapefiles.
+
+The filled diamond shows that the \texttt{GISProject} contains its nine \texttt{MapLayer} objects. The open diamond shows that a \texttt{MapLayer} can represent many \texttt{SpatialFeature} objects. The shapefiles do not have keys linking records across layers, so we did not add claims such as a road connecting a settlement. Spatial relationships can be checked from the feature geometries when needed.
+
+\section*{\color{navy}Why we chose this structure}
+The diagram follows the data from our Assignment 1 project. It keeps the source field names, groups features by geometry and shows the available categories. The Enterprise Architect XMI file contains the same classes and relationships, along with the saved diagram layout.
+
+\vfill
+\hrule
+\vspace{4pt}
+{\small\color{gray}Group 08 \hfill CS60111 GIS \textbar\ Assignment 2}
+\end{document}
