@@ -8,7 +8,6 @@ packs the three files.
 """
 
 from pathlib import Path
-from shutil import copy2
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from reportlab.lib import colors
@@ -28,12 +27,11 @@ SUBMISSION_DIR.mkdir(parents=True, exist_ok=True)
 EA_DIAGRAM_PDF = EA_DIR / "Murakata_Sankrail_UML_Class_Diagram_EA.pdf"
 EA_XMI_FILE = EA_DIR / "Murakata_Sankrail_UML_Model_EA_export.xmi"
 WRITEUP_PDF = PDF_DIR / "Murakata_Sankrail_Class_Diagram_WriteUp.pdf"
-XMI_FILE = SUBMISSION_DIR / "Murakata_Sankrail_UML_Model.xmi"
 ZIP_FILE = SUBMISSION_DIR / "Group_08_Assignment_2_Submission.zip"
 
 MEMBERS = "Group 08: Ashutosh Sharma (23CS10005), Krishnkant Sahu (23CS10035), Sanskar Sovitkar (24CS10131)"
 
-# Same text as WriteUp.md and writeup_latex/main.tex; keep the three in step.
+# Same text as WriteUp.md; keep the two in step.
 WRITEUP = [
     (None, [
         "For Assignment 1 we mapped Murakata and Sankrail in QGIS using nine shapefile layers: boundary, bareland, cropland, drainage, forest, landmarks, roads, settlement and waterbody. For this assignment we turned that project into a UML class diagram in Enterprise Architect. It has 15 classes and 9 enumerations, and everything in it comes from the shapefiles and QML style files we submitted last time.",
@@ -127,7 +125,7 @@ def make_writeup_pdf():
 def create_zip():
     with ZipFile(ZIP_FILE, "w", ZIP_DEFLATED) as archive:
         archive.write(EA_DIAGRAM_PDF, "Murakata_Sankrail_UML_Class_Diagram.pdf")
-        archive.write(XMI_FILE, XMI_FILE.name)
+        archive.write(EA_XMI_FILE, "Murakata_Sankrail_UML_Model.xmi")
         archive.write(WRITEUP_PDF, WRITEUP_PDF.name)
 
 
@@ -135,10 +133,7 @@ if __name__ == "__main__":
     for required in (EA_DIAGRAM_PDF, EA_XMI_FILE):
         if not required.exists():
             raise SystemExit(f"Missing Enterprise Architect export: {required}")
-    copy2(EA_XMI_FILE, XMI_FILE)
     make_writeup_pdf()
     create_zip()
-    print(EA_DIAGRAM_PDF)
-    print(XMI_FILE)
     print(WRITEUP_PDF)
     print(ZIP_FILE)
