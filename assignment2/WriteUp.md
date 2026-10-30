@@ -1,27 +1,29 @@
-# Short Write-up: GIS Class Diagram for Murakata and Sankrail
+# Assignment 2 - UML Class Diagram
 
-**Assignment 2 | Group 08 | Based on our Assignment 1 QGIS project**
+GIS of Murakata and Sankrail (from our Assignment 1 QGIS project)
 
-## What we modelled
+*Group 08: Ashutosh Sharma (23CS10005), Krishnkant Sahu (23CS10035), Sanskar Sovitkar (24CS10131)*
 
-In Assignment 1, our group made a QGIS map of Murakata and Sankrail. It uses nine shapefile layers: boundary, bareland, cropland, drainage, forest, landmarks, roads, settlement and waterbody. For Assignment 2, we drew a UML class diagram to show how the project and its geographic data fit together. The diagram has 15 classes and nine enumerations.
+For Assignment 1 we mapped Murakata and Sankrail in QGIS using nine shapefile layers: boundary, bareland, cropland, drainage, forest, landmarks, roads, settlement and waterbody. For this assignment we turned that project into a UML class diagram in Enterprise Architect. It has 15 classes and 9 enumerations, and everything in it comes from the shapefiles and QML style files we submitted last time.
 
-## Project and map layers
+## The project and its layers
 
-We used `GISProject` for the QGIS project and `MapLayer` for each shapefile. The project contains nine map layers, one for each source layer. A map layer stores its name, source file, geometry type and feature count. It also represents the spatial features in that file. Keeping these classes separate makes it clear which details belong to the project and which belong to an individual layer.
+At the top is `GISProject`, which stands for the QGIS project itself. Each shapefile is a `MapLayer`, so the project has exactly nine of them. We drew this as a composition (filled diamond) because a layer only makes sense as part of the project. A `MapLayer` then holds the features stored in its shapefile. For that link we used an aggregation (open diamond) with 0..* on the feature side, since a layer can hold any number of features, including none.
 
-## Geographic features
+## Features
 
-`SpatialFeature` is an abstract class for information shared by mapped features, including geometry and an optional identifier. We made the identifier optional because the boundary layer has no ID field. We grouped the feature classes by shape using the abstract classes `PolygonFeature`, `PointFeature` and `LineFeature`. `StudyArea`, `Bareland`, `Cropland`, `Drainage`, `Forest`, `Settlement` and `Waterbody` are polygon features; `Landmark` is a point feature; and `Road` is a line feature.
+We grouped the features by geometry, since that is the first thing every shapefile fixes. `SpatialFeature` is the abstract parent and holds the geometry and an id. The id is optional ([0..1]) because the boundary layer has no id field. Below it are three abstract classes: `PolygonFeature`, `PointFeature` and `LineFeature`. Seven layers are polygons: `StudyArea` (our name for the boundary), `Bareland`, `Cropland`, `Drainage`, `Forest`, `Settlement` and `Waterbody`. Landmarks are points and roads are lines.
 
-Feature attributes keep the field names from the DBF tables, such as `NAME`, `VILL_NAME`, `AREA`, `bareland_t`, `forest_typ`, `landmark_t` and `road_type`. Cropland has no extra thematic field in the source data, so it has no extra attribute in the diagram.
+We kept the attribute names exactly as they are in the DBF files, including cut-off ones like `forest_typ`, `waterbody_` and `construct_`. Shapefile field names can only be ten characters long, and leaving them unchanged makes it easy to check the diagram against the attribute tables. Cropland has no thematic field, so it only has what it inherits. The drainage shapefile has no features saved in it, so for `Drainage` we went by its field definition and its QML style.
 
-## Categories and relationships
+## Categories
 
-We used nine enumerations for fixed categories in the data, including road type, forest type, waterbody type and construction material. Their values follow the QML category definitions and the values recorded in the shapefiles.
+The enumerations come from the QML styles. We listed every category each style defines, not only the ones that show up in our data. That is why `LandmarkType` is so long: the landmarks style has 33 categories, and our eight landmark points use five of them (temple, temple_tribal, shop, playground and studio). `ConstructionMaterial` is the exception. The roads style is only categorised by `road_type`, so we took its two values, metal and non-metal, from the roads attribute table. `GeometryType` just lists the three geometry kinds.
 
-The filled diamond shows that the `GISProject` contains its nine `MapLayer` objects. The open diamond shows that a `MapLayer` can represent many `SpatialFeature` objects. The shapefiles do not have keys linking records across layers, so we did not add claims such as a road connecting a settlement. Spatial relationships can be checked from the feature geometries when needed.
+## What we left out
 
-## Why we chose this structure
+We thought about adding links between features, for example a road serving a settlement. The layers don't share any keys, though, so nothing in the data supports links like that. They are really spatial relationships, which you would work out from the geometry with operations like `intersects()` and `contains()` rather than store as associations.
 
-The diagram follows the data from our Assignment 1 project. It keeps the source field names, groups features by geometry and shows the available categories. The Enterprise Architect XMI file contains the same classes and relationships, along with the saved diagram layout.
+## Files
+
+The class diagram PDF was exported from Enterprise Architect. The XMI file is EA's XMI 2.1 export of the same model, with the diagram layout, so it can be imported back into EA. A note on the diagram lists where the classes and values came from.
