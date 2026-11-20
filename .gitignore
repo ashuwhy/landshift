@@ -8,3 +8,8 @@ slides/*.out
 slides/*.snm
 slides/*.toc
 slides/main.pdf
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/main.pdf
