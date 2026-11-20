@@ -229,7 +229,7 @@ def compound():
                 out.append(f'\\fill[{COL[k]}] ({left:.3f},{y_bar:.2f}) rectangle ({left + w:.3f},{y_bar - 0.22:.2f});')
             left += w
         pct = 100 * ha['built-up'] / total
-        out.append(f'\\node[anchor=north east,font=\\scriptsize\\bfseries,text=saffron,inner sep=0] at ([yshift=-1.5mm]c{i}.south east) {{{pct:.0f}\\% built}};')
+        out.append(f'\\node[anchor=north east,font=\\scriptsize\\bfseries,text=saffron,inner sep=0] at ([yshift=-1.5mm]c{i}.south east) {{{pct:.0f}\\%}};')
     return out
 
 
